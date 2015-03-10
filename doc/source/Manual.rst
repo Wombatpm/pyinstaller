@@ -7,7 +7,7 @@ PyInstaller Manual
 :Version: |PyInstallerVersion|
 :Homepage: |Homepage|
 :Author: David Cortesi (based on structure by Giovanni Bajo & William Caban (based on Gordon McMillan's manual))
-:Contact: rasky@develer.com
+:Contact: pyinstaller@googlegroups.com
 :Revision: $Rev$
 :Source URL: $HeadURL$
 :Copyright: This document has been placed in the public domain.
@@ -531,7 +531,7 @@ General Options
     Do *not* include Python module ``codecs`` and other Unicode support.
     The default is to include them if available, whether the script imports them or not.
 
---distpath=path_to_executable, -o path_to_executable
+--distpath=path_to_executable
 	Specify where to put the bundled app.
 	The default is a ``dist`` folder in
 	the same folder as the first script.
@@ -588,6 +588,11 @@ Options for Finding Imported Modules and Libraries
     (which are not the same as analysis-time hooks)
     are discussed under `Changing Runtime Behavior`_ below.
     This option may be given more than once.
+
+--exclude-module=MODULENAME
+    Optional module or package name (his Python name,
+    not path names) that will be ignored.
+    This option can be used multiple times.
 
 Options for the Executable Output
 ---------------------------------------
@@ -666,6 +671,13 @@ Options for Windows apps
     if *TYPE*, *NAME* and *LANGUAGE* are omitted or given as ``*``.
     This option an be used more than once to specify more resources.
 
+--uac-admin
+    Using this option creates a Manifest which will request elevation upon
+    application restart.
+
+--uac-uiaccess
+    Using this option allows an elevated application to work with Remote Desktop.
+
 Options for Mac OS X apps
 ---------------------------
 
@@ -673,6 +685,13 @@ Options for Mac OS X apps
     Specify a Mac icon-set file to be applied to
     the output *name*.app that is created when both ``--onefile``
     and ``--windowed`` are specified.
+
+--osx-bundle-identifier=<BUNDLE_IDENTIFIER>
+    Mac OS X .app bundle identifier is used as the default
+    unique program name for code signing purposes. The
+    usual form is a hierarchical name in reverse DNS
+    notation. For example: com.mycompany.department.appname
+    (default: first script's basename)
 
 
 Building Mac OS X App Bundles
@@ -1522,7 +1541,7 @@ Bootloader
 ----------
 
 The bootloader prepares everything for running Python code.
-It begins the setup and then reruns itself in another process.
+It begins the setup and then returns itself in another process.
 This approach of using two processes allows a lot of flexibility
 and is used in all bundles except one-folder mode in Windows.
 So do not be surprised if you will see your bundled app
