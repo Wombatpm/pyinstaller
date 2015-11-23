@@ -9,7 +9,6 @@
 
 
 hiddenimports = ['sip',
-                 'PyQt4._qt',
                  'PyQt4.QtAssistant',
                  'PyQt4.QtCore',
                  'PyQt4.QtGui',

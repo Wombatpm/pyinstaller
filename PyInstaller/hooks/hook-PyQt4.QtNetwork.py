@@ -8,13 +8,8 @@
 #-----------------------------------------------------------------------------
 
 
-hiddenimports = ['sip', 'PyQt4.QtCore', 'PyQt4._qt']
+from PyInstaller.utils.hooks import qt4_plugins_binaries
 
-from PyInstaller.hooks.hookutils import qt4_plugins_binaries
-
-
-def hook(mod):
-    # Network Bearer Management in Qt4 4.7+
-    # TODO fix this hook to use attribute 'binaries'.
-    mod.pyinstaller_binaries.extend(qt4_plugins_binaries('bearer'))
-    return mod
+# Network Bearer Management in Qt4 4.7+
+binaries = qt4_plugins_binaries('bearer')
+hiddenimports = ['sip', 'PyQt4.QtCore']

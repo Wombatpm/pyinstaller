@@ -16,17 +16,16 @@ attribute.
 """
 
 import os.path
-from PyInstaller.hooks.hookutils import get_module_file_attribute
+from PyInstaller.utils.hooks import get_pywin32_module_file_attribute
 
-_pth = get_module_file_attribute('pythoncom')
+_pth = get_pywin32_module_file_attribute('pythoncom')
 
 # Binaries that should be included with the module 'pythoncom'.
-# List mod.pyinstaller_binaries gets extended.
 binaries = [
     (
-        # Relative path in the ./dist/app_name/ directory.
-        os.path.basename(_pth),
         # Absolute path on hard disk.
         _pth,
+        # Relative directory path in the ./dist/app_name/ directory.
+        '.',
     )
 ]

@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Copyright (c) 2013, PyInstaller Development Team.
+# Copyright (c) 2005-2015, PyInstaller Development Team.
 #
 # Distributed under the terms of the GNU General Public License with exception
 # for distributing bootloader.
@@ -12,27 +12,18 @@
 Hook for PyZMQ. Cython based Python bindings for messaging library ZeroMQ.
 http://www.zeromq.org/
 """
-import glob
-import os
-from PyInstaller.hooks.hookutils import collect_submodules
+from PyInstaller.utils.hooks import collect_dynamic_libs, collect_submodules
 
 hiddenimports = ['zmq.utils.garbage']
 hiddenimports.extend(collect_submodules('zmq.backend'))
 
-def hook(mod):
-    # If PyZMQ provides its own copy of libzmq or libsodium, add it to the
-    # extension-modules TOC so zmq/__init__.py can load it at runtime.
-    # For predictable behavior, the libzmq search here must be equivalent
-    # to the search in zmq/__init__.py.
-    zmq_directory = os.path.dirname(mod.__file__)
-    for libname in ('libzmq', 'libsodium'):
-        bundled = glob.glob(os.path.join(zmq_directory,
-                                         libname + '*.{pyd,so,dll,dylib}*'))
-        if bundled:
-            # zmq/__init__.py will look in os.join(sys._MEIPASS, 'zmq'),
-            # so libzmq has to land there.
-            name = os.path.join('zmq', os.path.basename(bundled[0]))
-            # TODO fix this hook to use attribute 'binaries'.
-            mod.pyinstaller_binaries.append((name, bundled[0], 'BINARY'))
+# If PyZMQ provides its own copy of libzmq and libsodium, add it to the
+# extension-modules TOC so zmq/__init__.py can load it at runtime.
+# PyZMQ is able to load 'libzmq' and 'libsodium' even from sys._MEIPASS.
+# So they could be with other .dlls.
+binaries = collect_dynamic_libs('zmq')
 
-    return mod
+# If PyZMQ pvorides its own copy of libzmq and libsodium, these libs look like
+# C extensions. Excluding these modules ensures that those dlls are not bundled
+# twice. Once as ./zmq.libzmq.pyd and once as ./zmq/libzmq.py.
+excludedimports = ['zmq.libzmq']
